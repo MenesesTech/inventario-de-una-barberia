@@ -18,7 +18,6 @@ public class userController implements ActionListener, MouseListener {
     private usuarioDao user_employeeDao;
     private systemView systemview;
     DefaultTableModel model = new DefaultTableModel();
-    String iconUsername = "";
 
     public userController(usuario user_employee, usuarioDao user_employeeDao, systemView systemview) {
         this.user_employee = user_employee;

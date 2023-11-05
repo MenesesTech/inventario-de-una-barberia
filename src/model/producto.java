@@ -5,22 +5,24 @@ public class producto {
     private String codigo;
     private String nombre;
     private String descripcion;
-    private String estado;
-    private String categoria;
     private int cantidad;
     private double pventa;
+    private String categoria;
+    private String created;
+    private String updated;
 
     public producto() {
     }
 
-    public producto(String codigo, String nombre, String descripcion, String estado, String categoria, int cantidad, double pventa) {
+    public producto(String codigo, String nombre, String descripcion, int cantidad, double pventa, String categoria, String created, String updated) {
         this.codigo = codigo;
         this.nombre = nombre;
         this.descripcion = descripcion;
-        this.estado = estado;
-        this.categoria = categoria;
         this.cantidad = cantidad;
         this.pventa = pventa;
+        this.categoria = categoria;
+        this.created = created;
+        this.updated = updated;
     }
 
     public String getCodigo() {
@@ -47,22 +49,6 @@ public class producto {
         this.descripcion = descripcion;
     }
 
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public String getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
-
     public int getCantidad() {
         return cantidad;
     }
@@ -77,6 +63,30 @@ public class producto {
 
     public void setPventa(double pventa) {
         this.pventa = pventa;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+
+    public String getCreated() {
+        return created;
+    }
+
+    public void setCreated(String created) {
+        this.created = created;
+    }
+
+    public String getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(String updated) {
+        this.updated = updated;
     }
     
     
