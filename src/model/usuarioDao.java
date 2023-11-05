@@ -22,7 +22,16 @@ public class usuarioDao {
     public static String username = "";
     public static String rol_user = "";
 
-    // Metodo de Login
+    // Método de Login
+    /**
+     * Verifica las credenciales de inicio de sesión de un usuario en la base de
+     * datos.
+     *
+     * @param user_name Nombre de usuario del empleado.
+     * @param password Contraseña del empleado.
+     * @return Objeto usuario que contiene los datos del empleado si la
+     * autenticación es exitosa, de lo contrario, un objeto vacío.
+     */
     public usuario loginQuery(String user_name, String password) {
         String query = "SELECT * FROM usuario WHERE username = ? AND contrasena = ?";
         usuario empleado = new usuario();
@@ -48,7 +57,14 @@ public class usuarioDao {
         return empleado;
     }
 
-    // Metodo para registrar el usuario
+    // Método para registrar el usuario
+    /**
+     * Registra un nuevo usuario en la base de datos.
+     *
+     * @param user_obj Objeto usuario que contiene los datos del nuevo usuario a
+     * registrar.
+     * @return true si el registro es exitoso, false en caso de error.
+     */
     public boolean registerUserQuery(usuario user_obj) {
         String query = "INSERT INTO usuario (username, contrasena, nombre, rol) VALUES(?,?,?,?)";
         try {
@@ -66,7 +82,13 @@ public class usuarioDao {
         }
     }
 
-    // Metodo para listar usuarios
+    // Método para listar usuarios
+    /**
+     * Recupera la lista de todos los usuarios registrados en la base de datos.
+     *
+     * @return Una lista de objetos usuario que representan a los usuarios
+     * registrados.
+     */
     public List listUserQuery() {
         List<usuario> list_users = new ArrayList();
         String query = "SELECT id_usuario, username, contrasena, nombre, rol FROM usuario;";
@@ -90,8 +112,15 @@ public class usuarioDao {
     }
 
     // Actualizar datos del usuario
+    /**
+     * Actualiza los datos de un usuario en la base de datos.
+     *
+     * @param user_obj Objeto usuario que contiene los datos actualizados del
+     * usuario.
+     * @return true si la actualización es exitosa, false en caso de error.
+     */
     public boolean updateUserQuery(usuario user_obj) {
-        String query = "UPDATE usuario SET username = ?, contrasena = ?, nombre = ?, rol =? WHERE id_usuario = ?";
+        String query = "UPDATE usuario SET username = ?, contrasena = ?, nombre = ?, rol = ? WHERE (id_usuario = ?)";
         try {
             conn = cn.getConnection();
             pst = conn.prepareStatement(query);
@@ -107,8 +136,14 @@ public class usuarioDao {
             return false;
         }
     }
-    
-    // Metodo para eliminar un empleado
+
+    // Método para eliminar un empleado
+    /**
+     * Elimina un usuario de la base de datos por su identificador.
+     *
+     * @param id Identificador del usuario a eliminar.
+     * @return true si la eliminación es exitosa, false en caso de error.
+     */
     public boolean deleteUserQuery(String id) {
         String query = "DELETE FROM usuario WHERE id_usuario = ?";
         try {
@@ -122,23 +157,52 @@ public class usuarioDao {
             return false;
         }
     }
-    // Metodo para recuperar contraseña
+
+    // Método para recuperar contraseña
+    /**
+     * Recupera la contraseña de un usuario por su nombre de usuario.
+     *
+     * @param username Nombre de usuario del empleado.
+     * @return La contraseña del usuario si se encuentra en la base de datos, de
+     * lo contrario, una cadena vacía.
+     */
     public String recuperarContraseña(String username) {
-        String query = "SELECT contrasena FROM usuario WHERE username = '" + username + "'";
+        String query = "SELECT contrasena FROM usuario WHERE username = ?";
         try {
             conn = cn.getConnection();
             pst = conn.prepareStatement(query);
+            pst.setString(1, username);
             rs = pst.executeQuery();
             if (rs.next()) {
                 String password = rs.getString("contrasena");
                 return password;
-            } else {
-                JOptionPane.showMessageDialog(null, "No se encontró ningún empleado con ese nombre de usuario.");
-                return "No se encontró ningún empleado con ese nombre de usuario";
             }
+            return "";
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al recuperar contraseña: "+e);
-            return "Ha ocurrido un error al recuperar la contraseña ";
+            JOptionPane.showMessageDialog(null, "Error al recuperar contraseña: " + e);
+            return "";
+        }
+    }
+
+    // Método para actualizar la contraseña
+    /**
+     * Actualiza la contraseña de un usuario en la base de datos.
+     *
+     * @param user_obj Objeto usuario que contiene la nueva contraseña.
+     * @return true si la actualización de la contraseña es exitosa, false en
+     * caso de error.
+     */
+    public boolean updateEmployeePassword(usuario user_obj) {
+        String query = "UPDATE usuario SET contrasena = ? WHERE username = '" + username + "'";
+        try {
+            conn = cn.getConnection();
+            pst = conn.prepareStatement(query);
+            pst.setString(1, user_obj.getPassword());
+            pst.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al modificar la contraseña " + e);
+            return false;
         }
     }
 

@@ -210,10 +210,10 @@ public class systemView extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jPasswordField1 = new javax.swing.JPasswordField();
+        txt_password_modify = new javax.swing.JPasswordField();
         jLabel8 = new javax.swing.JLabel();
-        jPasswordField2 = new javax.swing.JPasswordField();
-        jButton1 = new javax.swing.JButton();
+        txt_password_modify_confirm = new javax.swing.JPasswordField();
+        btn_modify_data = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -1584,9 +1584,9 @@ public class systemView extends javax.swing.JFrame {
         jLabel8.setForeground(new java.awt.Color(54, 63, 77));
         jLabel8.setText("Vuelva a escribir la contraseña para confirmar");
 
-        jButton1.setBackground(new java.awt.Color(54, 63, 77));
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("CAMBIAR LA CONTRASEÑA");
+        btn_modify_data.setBackground(new java.awt.Color(54, 63, 77));
+        btn_modify_data.setForeground(new java.awt.Color(255, 255, 255));
+        btn_modify_data.setText("CAMBIAR LA CONTRASEÑA");
 
         javax.swing.GroupLayout pnlPassNewLayout = new javax.swing.GroupLayout(pnlPassNew);
         pnlPassNew.setLayout(pnlPassNewLayout);
@@ -1598,14 +1598,14 @@ public class systemView extends javax.swing.JFrame {
                         .addGap(43, 43, 43)
                         .addGroup(pnlPassNewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel8)
-                            .addComponent(jPasswordField2, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txt_password_modify_confirm, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5)
                             .addComponent(jLabel3)
                             .addComponent(jLabel7)
-                            .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(txt_password_modify, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(pnlPassNewLayout.createSequentialGroup()
                         .addGap(107, 107, 107)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btn_modify_data, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(23, Short.MAX_VALUE))
         );
         pnlPassNewLayout.setVerticalGroup(
@@ -1618,13 +1618,13 @@ public class systemView extends javax.swing.JFrame {
                 .addGap(35, 35, 35)
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txt_password_modify, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPasswordField2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txt_password_modify_confirm, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(31, 31, 31)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btn_modify_data, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(190, Short.MAX_VALUE))
         );
 
@@ -1702,8 +1702,8 @@ public class systemView extends javax.swing.JFrame {
     public javax.swing.JPanel btnReport;
     public javax.swing.JButton btnUpdateUser;
     public javax.swing.JPanel btnUsers;
+    public javax.swing.JButton btn_modify_data;
     public javax.swing.JComboBox<String> cmbRol;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton14;
     private javax.swing.JButton jButton15;
@@ -1775,8 +1775,6 @@ public class systemView extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JPasswordField jPasswordField2;
     private javax.swing.JScrollPane jScrollPane10;
     private javax.swing.JScrollPane jScrollPane11;
     private javax.swing.JScrollPane jScrollPane13;
@@ -1847,5 +1845,7 @@ public class systemView extends javax.swing.JFrame {
     public javax.swing.JTextField txtNombreUser;
     public javax.swing.JTextField txtPassUser;
     public javax.swing.JTextField txtUsername;
+    public javax.swing.JPasswordField txt_password_modify;
+    public javax.swing.JPasswordField txt_password_modify_confirm;
     // End of variables declaration//GEN-END:variables
 }

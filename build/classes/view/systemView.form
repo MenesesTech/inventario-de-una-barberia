@@ -3104,16 +3104,16 @@
                                   <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jPasswordField2" min="-2" pref="400" max="-2" attributes="0"/>
+                                      <Component id="txt_password_modify_confirm" min="-2" pref="400" max="-2" attributes="0"/>
                                       <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                                       <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                                       <Component id="jLabel7" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jPasswordField1" alignment="0" min="-2" pref="400" max="-2" attributes="0"/>
+                                      <Component id="txt_password_modify" alignment="0" min="-2" pref="400" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="107" max="-2" attributes="0"/>
-                                  <Component id="jButton1" min="-2" pref="265" max="-2" attributes="0"/>
+                                  <Component id="btn_modify_data" min="-2" pref="265" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace pref="23" max="32767" attributes="0"/>
@@ -3130,13 +3130,13 @@
                           <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
                           <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jPasswordField1" min="-2" pref="30" max="-2" attributes="0"/>
+                          <Component id="txt_password_modify" min="-2" pref="30" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jPasswordField2" min="-2" pref="30" max="-2" attributes="0"/>
+                          <Component id="txt_password_modify_confirm" min="-2" pref="30" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
-                          <Component id="jButton1" min="-2" pref="36" max="-2" attributes="0"/>
+                          <Component id="btn_modify_data" min="-2" pref="36" max="-2" attributes="0"/>
                           <EmptySpace pref="190" max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -3176,7 +3176,10 @@
                     <Property name="text" type="java.lang.String" value="Escribe una nueva contrase&#xf1;a"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JPasswordField" name="jPasswordField1">
+                <Component class="javax.swing.JPasswordField" name="txt_password_modify">
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+                  </AuxValues>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel8">
                   <Properties>
@@ -3189,9 +3192,12 @@
                     <Property name="text" type="java.lang.String" value="Vuelva a escribir la contrase&#xf1;a para confirmar"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JPasswordField" name="jPasswordField2">
+                <Component class="javax.swing.JPasswordField" name="txt_password_modify_confirm">
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+                  </AuxValues>
                 </Component>
-                <Component class="javax.swing.JButton" name="jButton1">
+                <Component class="javax.swing.JButton" name="btn_modify_data">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="4d" green="3f" red="36" type="rgb"/>
@@ -3201,6 +3207,9 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="CAMBIAR LA CONTRASE&#xd1;A"/>
                   </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+                  </AuxValues>
                 </Component>
               </SubComponents>
             </Container>
