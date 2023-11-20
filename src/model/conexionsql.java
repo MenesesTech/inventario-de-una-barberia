@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import javax.swing.JOptionPane;
 import java.sql.SQLException;
 
-public class conexionsql {
+public class ConexionSql {
 
     private String database_name = "havanabd";
     private String user = "root";

@@ -1,19 +1,19 @@
 package model;
 
-public class usuario {
+public class Employee {
 
     private int id;
-    private String nombre;
+    private String name;
     private String username;
     private String password;
     private String rol;
 
-    public usuario() {
+    public Employee() {
     }
 
-    public usuario(int id, String nombre, String username, String password, String rol) {
+    public Employee(int id, String name, String username, String password, String rol) {
         this.id = id;
-        this.nombre = nombre;
+        this.name = name;
         this.username = username;
         this.password = password;
         this.rol = rol;
@@ -27,12 +27,12 @@ public class usuario {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getUsername() {
@@ -50,7 +50,7 @@ public class usuario {
     public void setPassword(String password) {
         this.password = password;
     }
-    
+
     public String getRol() {
         return rol;
     }
@@ -58,5 +58,5 @@ public class usuario {
     public void setRol(String rol) {
         this.rol = rol;
     }
-
+    
 }

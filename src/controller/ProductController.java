@@ -7,18 +7,18 @@ import java.awt.event.MouseListener;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import model.producto;
-import model.productoDao;
+import model.Product;
+import model.ProductDao;
 import view.systemView;
 
 public class ProductController implements ActionListener, MouseListener {
 
-    private producto product;
-    private productoDao productDao;
+    private Product product;
+    private ProductDao productDao;
     private systemView systemview;
     DefaultTableModel model = new DefaultTableModel();
 
-    public ProductController(producto product, productoDao productDao, systemView systemview) {
+    public ProductController(Product product, ProductDao productDao, systemView systemview) {
         this.product = product;
         this.productDao = productDao;
         this.systemview = systemview;
@@ -30,65 +30,59 @@ public class ProductController implements ActionListener, MouseListener {
         this.systemview.btnDeleteProduct.addActionListener(this);
         //Boton Cancelar
         this.systemview.btnCancelProduct.addActionListener(this);
-        //Tabla de categorias
+        //Boton de enviar a la seccion de compras
+        this.systemview.btnProductCart.addMouseListener(this);
+        //Tabla de Productos
         this.systemview.tableProduct.addMouseListener(this);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == systemview.btnAddProduct) {
-            // Acción al hacer clic en el botón "Agregar Producto"
-
             // Verificar que los campos no estén vacíos
-            if (systemview.txtNameProduct.getText().isEmpty()
-                    || systemview.txtPrecioVenta.getText().isEmpty()
-                    || systemview.txtCantProduct.getText().isEmpty()
-                    || systemview.cmbCategory.getSelectedIndex() == 0) {
+            if (systemview.txtNameProduct.getText().equals("")
+                    || systemview.txtCodProd.getText().equals("")
+                    || systemview.txaDescription.getText().equals("")) {
                 JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios");
             } else {
-                // Obtener datos del producto desde la interfaz gráfica
-                product.setCodigo(systemview.txtCodProd.getText().trim());
-                product.setNombre(systemview.txtNameProduct.getText().trim());
-                product.setDescripcion(systemview.txaDescription.getText().trim());
-                product.setCantidad(Integer.parseInt(systemview.txtCantProduct.getText().trim()));
-                product.setPventa(Double.parseDouble(systemview.txtPrecioVenta.getText()));
-                product.setCategoria(systemview.cmbCategory.getSelectedItem().toString().trim());
-
-                // Registrar el producto en la base de datos
-                if (productDao.registroProductQuery(product)) {
+                // Obtener datos del Product desde la interfaz gráfica
+                int id_category = productDao.obtainCategoryId(String.valueOf(systemview.cmbCategory.getSelectedItem()));
+                product.setName(systemview.txtNameProduct.getText().trim());
+                product.setCode(systemview.txtCodProd.getText().trim());
+                product.setDescription(systemview.txaDescription.getText().trim());
+                product.setCategory_name(String.valueOf(systemview.cmbCategory.getSelectedItem()));
+                product.setCategory_id(id_category);
+                // Registrar la categoria en la base de datos
+                if (productDao.registerProduct(product)) {
                     cleanTable();
                     cleanFields();
-                    ListAllProducts();
+                    ListAllProduct();
                     JOptionPane.showMessageDialog(null, "Producto registrado con éxito");
                 } else {
                     JOptionPane.showMessageDialog(null, "Ha ocurrido un error al registrar el producto");
                 }
             }
         } else if (e.getSource() == systemview.btnUpdateProduct) {
-            // Acción al hacer clic en el botón "Modificar Producto"
-
-            if (systemview.txtCodProd.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Seleccione un producto para continuar");
+            if (systemview.txtCodProd.getText().equals("")) {
+                JOptionPane.showMessageDialog(null, "Seleccione una fila para continuar");
             } else {
-                if (systemview.txtNameProduct.getText().isEmpty()
-                        || systemview.txtPrecioVenta.getText().isEmpty()
-                        || systemview.txtCantProduct.getText().isEmpty()
-                        || systemview.cmbCategory.getSelectedIndex() == 0) {
+                if (systemview.txtNameProduct.getText().equals("")
+                        || systemview.txtCodProd.getText().equals("")
+                        || systemview.txaDescription.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios");
                 } else {
-                    // Obtener datos del producto desde la interfaz gráfica
-                    product.setCodigo(systemview.txtCodProd.getText().trim());
-                    product.setNombre(systemview.txtNameProduct.getText().trim());
-                    product.setDescripcion(systemview.txaDescription.getText().trim());
-                    product.setCantidad(Integer.parseInt(systemview.txtCantProduct.getText().trim()));
-                    product.setPventa(Double.parseDouble(systemview.txtPrecioVenta.getText()));
-                    product.setCategoria(systemview.cmbCategory.getSelectedItem().toString().trim());
-
-                    // Actualizar los datos del producto en la base de datos
-                    if (productDao.actualizarProducto(product)) {
+                    // Obtener datos del Product desde la interfaz gráfica
+                    int id_category = productDao.obtainCategoryId(String.valueOf(systemview.cmbCategory.getSelectedItem()));
+                    product.setName(systemview.txtNameProduct.getText().trim());
+                    product.setCode(systemview.txtCodProd.getText().trim());
+                    product.setDescription(systemview.txaDescription.getText().trim());
+                    product.setCategory_name(String.valueOf(systemview.cmbCategory.getSelectedItem()));
+                    product.setCategory_id(id_category);
+                    // Actualizar los  datos de la categoria en la base de datos
+                    if (productDao.updateProduct(product)) {
                         cleanTable();
                         cleanFields();
-                        ListAllProducts();
+                        ListAllProduct();
                         JOptionPane.showMessageDialog(null, "Datos del producto modificados con éxito");
                     } else {
                         JOptionPane.showMessageDialog(null, "Ha ocurrido un error al modificar el producto");
@@ -96,79 +90,83 @@ public class ProductController implements ActionListener, MouseListener {
                 }
             }
         } else if (e.getSource() == systemview.btnDeleteProduct) {
-            // Acción al hacer clic en el botón "Eliminar Producto"
-
             int row = systemview.tableProduct.getSelectedRow();
             if (row == -1) {
-                JOptionPane.showMessageDialog(null, "Debes seleccionar un producto para eliminar");
+                JOptionPane.showMessageDialog(null, "Debes seleccionar una categoria para eliminar");
             } else {
-                String codigo = systemview.tableProduct.getValueAt(row, 0).toString();
+                String codigoProduct = systemview.tableProduct.getValueAt(row, 0).toString();
                 int question = JOptionPane.showConfirmDialog(null, "¿Realmente quieres eliminar este producto?");
-                if (question == 0 && productDao.eliminarProducto(codigo)) {
+                if (question == 0 && productDao.deleteProduct(codigoProduct) != false) {
                     cleanFields();
                     cleanTable();
-                    systemview.btnAddProduct.setEnabled(true);
-                    ListAllProducts();
+                    systemview.btnAddCategory.setEnabled(true);
+                    systemview.txtCodProd.setEditable(true);
+                    ListAllProduct();
                     JOptionPane.showMessageDialog(null, "Producto eliminado con éxito");
                 }
             }
         } else if (e.getSource() == systemview.btnCancelProduct) {
-            // Acción al hacer clic en el botón "Cancelar"
             cleanFields();
             systemview.btnAddProduct.setEnabled(true);
+            systemview.txtCodProd.setEditable(true);
         }
     }
 
-    // Método para listar todos los productos
-    public void ListAllProducts() {
-        List<producto> list = productDao.listarProductos();
+    public void ListAllProduct() {
+        List<Product> list = productDao.listProducts();
         model = (DefaultTableModel) systemview.tableProduct.getModel();
-        Object[] row = new Object[7]; // Ajusta el número de columnas según tus necesidades
+        Object[] row = new Object[7];
         for (int i = 0; i < list.size(); i++) {
-            row[0] = list.get(i).getCodigo();
-            row[1] = list.get(i).getNombre();
-            row[2] = list.get(i).getDescripcion();
-            row[3] = list.get(i).getCantidad();
-            row[4] = list.get(i).getPventa();
-            row[5] = list.get(i).getCreated();
-            row[6] = list.get(i).getUpdated();
+            row[0] = list.get(i).getCode();
+            row[1] = list.get(i).getName();
+            row[2] = list.get(i).getDescription();
+            row[3] = list.get(i).getQuantity();
+            row[4] = list.get(i).getCreated();
+            row[5] = list.get(i).getUpdated();
+            row[6] = list.get(i).getCategory_name();
             model.addRow(row);
         }
     }
-    // Método para limpiar los campos de texto
 
+    //Metodo para limpiar los campos de texto
     public void cleanFields() {
         systemview.txtCodProd.setText("");
         systemview.txtNameProduct.setText("");
         systemview.txaDescription.setText("");
         systemview.txtCantProduct.setText("");
-        systemview.txtPrecioVenta.setText("");
-        systemview.cmbCategory.setSelectedIndex(0); // Ajusta según tu JComboBox
+        systemview.cmbCategory.setSelectedIndex(0);
     }
 
-// Método para limpiar la tabla de productos
+    //Metodo para limpiar la tabla productos
     public void cleanTable() {
-        DefaultTableModel model = (DefaultTableModel) systemview.tableProduct.getModel();
-        while (model.getRowCount() > 0) {
-            model.removeRow(0);
+        for (int i = 0; i < model.getRowCount(); i++) {
+            model.removeRow(i);
+            i = i - 1;
         }
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getSource() == systemview.tableProduct) {
+            // Capturar fila
             int row = systemview.tableProduct.rowAtPoint(e.getPoint());
-
-            if (row >= 0) {
-                // Rellenar cajas de texto y área de texto
-                systemview.txtCodProd.setText(systemview.tableProduct.getValueAt(row, 0).toString());
-                systemview.txtNameProduct.setText(systemview.tableProduct.getValueAt(row, 1).toString());
-                systemview.txaDescription.setText(systemview.tableProduct.getValueAt(row, 2).toString());
-                systemview.txtCantProduct.setText(systemview.tableProduct.getValueAt(row, 3).toString());
-                systemview.txtPrecioVenta.setText(systemview.tableProduct.getValueAt(row, 4).toString());
-                String selectedCategory = systemview.tableProduct.getValueAt(row, 5).toString();
-                systemview.cmbCategory.setSelectedItem(selectedCategory);
-            }
+            // Rellenar cajas de texto
+            systemview.txtCodProd.setText(systemview.tableProduct.getValueAt(row, 0).toString());
+            systemview.txtNameProduct.setText(systemview.tableProduct.getValueAt(row, 1).toString());
+            systemview.txaDescription.setText(systemview.tableProduct.getValueAt(row, 2).toString());
+            systemview.txtCantProduct.setText(systemview.tableProduct.getValueAt(row, 3).toString());
+            systemview.cmbCategory.setSelectedItem(systemview.tableProduct.getValueAt(row, 6).toString());
+            // Deshabilitar cajas de texto
+            systemview.btnAddProduct.setEnabled(false);
+            systemview.txtCodProd.setEditable(false);
+        } else if (e.getSource() == systemview.btnProductCart) {
+            systemview.jTabbedPane1.setSelectedIndex(3);
+            int row = systemview.tableProduct.getSelectedRow(); // Puedes obtener la fila seleccionada directamente
+            systemview.txt_code_product_purchase.setText(systemview.tableProduct.getValueAt(row, 0).toString());
+            systemview.txt_name_purchase.setText(systemview.tableProduct.getValueAt(row, 1).toString());
+            cleanTable();
+            cleanFields();
+            ListAllProduct();
         }
     }
 
@@ -191,5 +189,4 @@ public class ProductController implements ActionListener, MouseListener {
     public void mouseExited(MouseEvent e) {
 
     }
-
 }

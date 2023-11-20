@@ -5,20 +5,21 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import model.categoria;
-import model.categoriaDao;
+import model.Category;
+import model.CategoryDao;
 import view.systemView;
 
-public class categoryController implements ActionListener, MouseListener {
+public class CategoryController implements ActionListener, MouseListener {
 
-    private categoria category;
-    private categoriaDao categoryDao;
+    private Category category;
+    private CategoryDao categoryDao;
     private systemView systemview;
     DefaultTableModel model = new DefaultTableModel();
 
-    public categoryController(categoria category, categoriaDao categoryDao, systemView systemview) {
+    public CategoryController(Category category, CategoryDao categoryDao, systemView systemview) {
         this.category = category;
         this.categoryDao = categoryDao;
         this.systemview = systemview;
@@ -32,6 +33,8 @@ public class categoryController implements ActionListener, MouseListener {
         this.systemview.btnCancelCategory.addActionListener(this);
         //Tabla de categorias
         this.systemview.tableCategory.addMouseListener(this);
+        //Jcombobox de Category
+        this.systemview.cmbCategory.addMouseListener(this);
     }
 
     @Override
@@ -39,17 +42,17 @@ public class categoryController implements ActionListener, MouseListener {
         // Método de escucha para eventos de botones en la interfaz gráfica
 
         if (e.getSource() == systemview.btnAddCategory) {
-            // Acción al hacer clic en el botón "Agregar categoria"
+            // Acción al hacer clic en el botón "Agregar Category"
 
             // Verificar que los campos no estén vacíos
             if (systemview.txtNameCategory.getText().equals("")) {
                 JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios");
             } else {
-                // Obtener datos de la categoria desde la interfaz gráfica
+                // Obtener datos de la Category desde la interfaz gráfica
                 category.setName(systemview.txtNameCategory.getText().trim());
 
-                // Registrar la categoria en la base de datos
-                if (categoryDao.registroCategoryQuery(category)) {
+                // Registrar la Category en la base de datos
+                if (categoryDao.registerCategoryQuery(category)) {
                     cleanTable();
                     cleanFields();
                     ListAllCategory();
@@ -67,10 +70,10 @@ public class categoryController implements ActionListener, MouseListener {
                 if (systemview.txtNameCategory.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios");
                 } else {
-                    // Obtener datos de la categoria desde la interfaz gráfica
-                    category.setName(systemview.txtNombreUser.getText().trim());
+                    // Obtener datos de la Category desde la interfaz gráfica
+                    category.setName(systemview.txtNameEmployee.getText().trim());
 
-                    // Actualizar los  datos de la categoria en la base de datos
+                    // Actualizar los  datos de la Category en la base de datos
                     if (categoryDao.updateCategory(category)) {
                         cleanTable();
                         cleanFields();
@@ -108,7 +111,7 @@ public class categoryController implements ActionListener, MouseListener {
 
     //Listar a las categorias
     public void ListAllCategory() {
-        List<categoria> list = categoryDao.listCategories();
+        List<Category> list = categoryDao.listCategories();
         model = (DefaultTableModel) systemview.tableCategory.getModel();
         Object[] row = new Object[2];
         for (int i = 0; i < list.size(); i++) {
@@ -130,6 +133,17 @@ public class categoryController implements ActionListener, MouseListener {
             model.removeRow(i);
             i = i - 1;
         }
+    }
+
+    // Rellenar JComboBox de categorías
+    public void JcomboBoxCategory() {
+        List<Category> lista = categoryDao.listCategoriesCombobox();
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+
+        for (int i = 0; i < lista.size(); i++) {
+            model.addElement(lista.get(i).getName());
+        }
+        systemview.cmbCategory.setModel(model);
     }
 
     @Override

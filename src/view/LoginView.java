@@ -1,17 +1,17 @@
 package view;
 
-import controller.loginController;
-import model.usuario;
-import model.usuarioDao;
+import controller.LoginController;
+import model.Employee;
+import model.EmployeeDao;
 
 public class LoginView extends javax.swing.JFrame {
 
-    usuario employee = new usuario();
-    usuarioDao employeeDao = new usuarioDao();
+    Employee employee = new Employee();
+    EmployeeDao employeeDao = new EmployeeDao();
 
     public LoginView() {
         initComponents();
-        loginController logincontrol = new loginController(employee, employeeDao, this);
+        LoginController logincontrol = new LoginController(employee, employeeDao, this);
         setSize(774, 461);
         setResizable(false);
         setLocationRelativeTo(null);

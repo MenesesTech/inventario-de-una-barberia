@@ -1,14 +1,14 @@
-
 package model;
 
-public class categoria {
+public class Category {
+
     private String id;
     private String name;
 
-    public categoria() {
+    public Category() {
     }
 
-    public categoria(String id, String name) {
+    public Category(String id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -28,5 +28,5 @@ public class categoria {
     public void setName(String name) {
         this.name = name;
     }
-    
+
 }
