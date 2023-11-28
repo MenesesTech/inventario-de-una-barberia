@@ -21,6 +21,7 @@ CREATE TABLE PRODUCTO (
     nombre_producto VARCHAR(45) NULL,
     descripcion VARCHAR(255) NULL,
     cantidad INT NULL,
+    caducidad DATE NULL,
     created VARCHAR(45) NULL,
     updated VARCHAR(45) NULL,
     id_categoria INT NULL,

@@ -56,6 +56,7 @@ public class CategoryController implements ActionListener, MouseListener {
                     cleanTable();
                     cleanFields();
                     ListAllCategory();
+                    JcomboBoxCategory();
                     JOptionPane.showMessageDialog(null, "Categoria registrado con éxito");
                 } else {
                     JOptionPane.showMessageDialog(null, "Ha ocurrido un error al registrar la categoria");
@@ -78,6 +79,7 @@ public class CategoryController implements ActionListener, MouseListener {
                         cleanTable();
                         cleanFields();
                         ListAllCategory();
+                        JcomboBoxCategory();
                         JOptionPane.showMessageDialog(null, "Datos de la categoria modificados con éxito");
                     } else {
                         JOptionPane.showMessageDialog(null, "Ha ocurrido un error al modificar la categoria");

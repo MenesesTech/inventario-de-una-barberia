@@ -50,7 +50,7 @@ public class ProductDao {
      */
     public List<Product> listProducts() {
         List<Product> products = new ArrayList<>();
-        String query = "SELECT p.codigo_producto, p.nombre_producto, p.descripcion, p.cantidad, p.created, p.updated, c.nombre_categoria "
+        String query = "SELECT p.codigo_producto, p.nombre_producto, p.descripcion, p.cantidad, p.created, p.updated, p.caducidad, c.nombre_categoria "
                 + "FROM producto p INNER JOIN categoria c ON p.id_categoria = c.id_categoria";
         try {
             conn = cn.getConnection();
@@ -65,6 +65,7 @@ public class ProductDao {
                 product.setCreated(rs.getString("created"));
                 product.setUpdated(rs.getString("updated"));
                 product.setCategory_name(rs.getString("nombre_categoria"));
+                product.setFecha_caducidad(rs.getString("caducidad"));
                 products.add(product);
             }
         } catch (SQLException e) {
@@ -141,4 +142,58 @@ public class ProductDao {
 
         return -1;
     }
+
+    /**
+     * Actualiza la cantidad de un producto en la base de datos
+     *
+     * @param quantity La nueva cantidad del producto a establecer
+     * @param CodeProduct El código del producto que se va a actualizar
+     * @return True si la actualización se realiza con éxito, false en caso
+     * contrario
+     */
+    public boolean updateQuantityProduct(int quantity, String CodeProduct) {
+        String query = "UPDATE producto SET cantidad = ?, updated = ? WHERE codigo_producto = ?";
+        Timestamp datetime = new Timestamp(new Date().getTime());
+        try {
+            conn = cn.getConnection();
+            pst = conn.prepareStatement(query);
+            pst.setInt(1, quantity);
+            pst.setTimestamp(2, datetime);
+            pst.setString(3, CodeProduct);
+            pst.execute();
+            return true;
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al modificar la cantidad del producto: " + e);
+            return false;
+        }
+    }
+
+    /**
+     * Realiza un control de stock para los productos en la base de datos
+     *
+     * @return True si el control de stock se ejecuta sin problemas, false si
+     * hay un error
+     */
+    public boolean stockControl() {
+        String query = "SELECT nombre_producto, cantidad FROM producto";
+        try {
+            conn = cn.getConnection();
+            pst = conn.prepareStatement(query);
+            rs = pst.executeQuery();
+
+            while (rs.next()) {
+                String nombre = rs.getString("nombre_producto");
+                int cantidad = rs.getInt("cantidad");
+
+                if (cantidad < 2) {
+                    JOptionPane.showMessageDialog(null, "El producto " + nombre + " se está agotando");
+                }
+            }
+            return true;
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al controlar el stock: " + e);
+            return false;
+        }
+    }
+
 }

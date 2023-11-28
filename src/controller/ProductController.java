@@ -30,6 +30,8 @@ public class ProductController implements ActionListener, MouseListener {
         this.systemview.btnDeleteProduct.addActionListener(this);
         //Boton Cancelar
         this.systemview.btnCancelProduct.addActionListener(this);
+        //Boton retirar productos
+        this.systemview.btnProductUpdateQuantity.addActionListener(this);
         //Boton de enviar a la seccion de compras
         this.systemview.btnProductCart.addMouseListener(this);
         //Tabla de Productos
@@ -109,13 +111,38 @@ public class ProductController implements ActionListener, MouseListener {
             cleanFields();
             systemview.btnAddProduct.setEnabled(true);
             systemview.txtCodProd.setEditable(true);
+        } else if (e.getSource() == systemview.btnProductUpdateQuantity) {
+            if (systemview.txtCodProd.getText().equals("")) {
+                JOptionPane.showMessageDialog(null, "Seleccione una fila para continuar");
+            } else {
+                if (systemview.txtNameProduct.getText().equals("")
+                        || systemview.txtCodProd.getText().equals("")
+                        || systemview.txaDescription.getText().equals("")) {
+                    JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios");
+                } else {
+                    int newquantity = 0;
+                    String code = systemview.txtCodProd.getText().trim();
+                    int quantity = Integer.parseInt(systemview.txtCantProduct.getText());
+                    int quantityremove = Integer.parseInt(systemview.txtQuantityRemove.getText());
+                    // Actualizar los  datos de la categoria en la base de datos
+                    newquantity = quantity - quantityremove;
+                    if (productDao.updateQuantityProduct(newquantity, code)) {
+                        cleanTable();
+                        cleanFields();
+                        ListAllProduct();
+                        JOptionPane.showMessageDialog(null, "Datos del producto modificados con éxito");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Ha ocurrido un error al modificar el producto");
+                    }
+                }
+            }
         }
     }
 
     public void ListAllProduct() {
         List<Product> list = productDao.listProducts();
         model = (DefaultTableModel) systemview.tableProduct.getModel();
-        Object[] row = new Object[7];
+        Object[] row = new Object[8];
         for (int i = 0; i < list.size(); i++) {
             row[0] = list.get(i).getCode();
             row[1] = list.get(i).getName();
@@ -124,6 +151,7 @@ public class ProductController implements ActionListener, MouseListener {
             row[4] = list.get(i).getCreated();
             row[5] = list.get(i).getUpdated();
             row[6] = list.get(i).getCategory_name();
+            row[7] = list.get(i).getFecha_caducidad();
             model.addRow(row);
         }
     }
@@ -134,6 +162,7 @@ public class ProductController implements ActionListener, MouseListener {
         systemview.txtNameProduct.setText("");
         systemview.txaDescription.setText("");
         systemview.txtCantProduct.setText("");
+        systemview.txtQuantityRemove.setText("");
         systemview.cmbCategory.setSelectedIndex(0);
     }
 

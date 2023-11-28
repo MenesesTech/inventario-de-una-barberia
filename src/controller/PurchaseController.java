@@ -6,7 +6,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.Purchase;
@@ -18,10 +20,11 @@ public class PurchaseController implements ActionListener, MouseListener, KeyLis
 
     private Purchase purchase;
     private PurchaseDao purchaseDao;
-    private int getIdSupplier = 0;
-    private int item = 0;
+    private int IdSupplier = 0;
     private int purchase_id = 0;
-    private int purchase_id_aux = 0;
+    private int item = 0;
+    //private int purchase_id_aux = 0;
+    private boolean aux = true;
     private systemView systemview;
     DefaultTableModel model = new DefaultTableModel();
     DefaultTableModel temp;
@@ -30,6 +33,8 @@ public class PurchaseController implements ActionListener, MouseListener, KeyLis
         this.purchase = purchase;
         this.purchaseDao = purchaseDao;
         this.systemview = systemview;
+        purchase_id = purchaseDao.PurchaseId() + 1;
+        this.systemview.txt_id_purchase.setText(String.valueOf(purchase_id));
         //Boton Agregar a la tabla
         this.systemview.btnaddBuy.addActionListener(this);
         //Boton Registrar Compras
@@ -49,95 +54,125 @@ public class PurchaseController implements ActionListener, MouseListener, KeyLis
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == systemview.btnaddBuy) {
-            int supplierId = purchaseDao.purchaseSupplierId(String.valueOf(systemview.cmbSupplier.getSelectedItem().toString()));
-            if (getIdSupplier == 0) {
-                getIdSupplier = supplierId;
-            } else {
-                if (getIdSupplier != supplierId) {
-                    JOptionPane.showMessageDialog(null, "No se puede realizar una misma compra a varios proveedores");
+            if (isFieldsComplete()) {
+                // Obtener datos de los campos
+                String product_name = systemview.txt_name_purchase.getText();
+                int quantity = Integer.parseInt(systemview.txt_quantity_purchase.getText());
+                double price = Double.parseDouble(systemview.txt_price_purchase.getText());
+                String supplier_name = systemview.cmbSupplier.getSelectedItem().toString();
+                Date fechaSeleccionada = systemview.fechaCaducidad.getDate();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String fechaCaducidadStr = sdf.format(fechaSeleccionada);
+                // Verificar si el producto ya está en la lista de compras
+                if (isProductInTemp(product_name, supplier_name)) {
+                    JOptionPane.showMessageDialog(null, "El producto ya está en la lista de compras");
+                    return;
                 } else {
-                    String product_name = systemview.txt_name_purchase.getText();
-                    double price = Double.parseDouble(systemview.txt_price_purchase.getText());
+                    temp = (DefaultTableModel) systemview.tablePurchase.getModel();
+                    String currentSupplier = systemview.cmbSupplier.getSelectedItem().toString();
 
-                    // Verificar si todos los campos necesarios están completos
-                    if (isFieldsComplete()) {
-                        int quantity = Integer.parseInt(systemview.txt_quantity_purchase.getText());
-                        purchase_id_aux = Integer.parseInt(systemview.txt_id_purchase.getText());
-                        String supplier_name = systemview.cmbSupplier.getSelectedItem().toString();
+                    // Verificar si todos los productos son del mismo proveedor
+                    for (int i = 0; i < systemview.tablePurchase.getRowCount(); i++) {
+                        String existingSupplier = systemview.tablePurchase.getValueAt(i, 5).toString();
+                        if (!existingSupplier.equals(currentSupplier)) {
+                            JOptionPane.showMessageDialog(null, "Todos los productos deben ser del mismo proveedor");
 
-                        if (quantity > 0) {
-                            temp = (DefaultTableModel) systemview.tablePurchase.getModel();
-
-                            // Verificar si el producto ya está registrado en la tabla de compras para el mismo proveedor
-                            for (int i = 0; i < systemview.tablePurchase.getRowCount(); i++) {
-                                String existingProductName = systemview.tablePurchase.getValueAt(i, 1).toString();
-
-                                if (existingProductName.equals(product_name)) {
-                                    JOptionPane.showMessageDialog(null, "El producto ya está registrado en la tabla de compras");
-                                    return;
-                                }
-                            }
-                            // Crear lista con los datos del nuevo registro
-                            ArrayList list = new ArrayList();
-                            item = 1;
-                            list.add(item);
-                            list.add(purchase_id_aux);
-                            list.add(product_name);
-                            list.add(quantity);
-                            list.add(price);
-                            list.add(quantity * price);
-                            list.add(supplier_name);
-
-                            // Crear un objeto para la nueva fila en la tabla
-                            Object[] obj = new Object[6];
-                            obj[0] = list.get(1);
-                            obj[1] = list.get(2);
-                            obj[2] = list.get(3);
-                            obj[3] = list.get(4);
-                            obj[4] = list.get(5);
-                            obj[5] = list.get(6);
-
-                            // Agregar la nueva fila a la tabla
-                            temp.addRow(obj);
-                            systemview.tablePurchase.setModel(temp);
-
-                            // Limpiar campos y configurar la interfaz para la siguiente entrada
-                            cleanFieldsPurchases();
-                            systemview.cmbSupplier.setEditable(false);
-                            systemview.txt_code_product_purchase.requestFocus();
-                            calculatePurchase();
-                            systemview.btnaddBuy.setEnabled(false);
+                            aux = false;
+                            return;
                         }
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Completa todos los campos antes de agregar a la tabla");
                     }
+                    if (quantity > 0 && aux == true) {
+                        aux = true;
+                        // Crear lista con los datos del nuevo registro
+                        ArrayList list = new ArrayList();
+                        item = 1;
+                        list.add(item);
+                        list.add(purchase_id); //0
+                        list.add(product_name); //1
+                        list.add(quantity); //2
+                        list.add(price); //3
+                        list.add(quantity * price); //4
+                        list.add(supplier_name); //5
+                        list.add(fechaCaducidadStr);
+
+                        // Crear un objeto para la nueva fila en la tabla
+                        Object[] obj = new Object[7];
+                        obj[0] = list.get(1);
+                        obj[1] = list.get(2);
+                        obj[2] = list.get(3);
+                        obj[3] = list.get(4);
+                        obj[4] = list.get(5);
+                        obj[5] = list.get(6);
+                        obj[6] = list.get(7);
+
+                        // Agregar la nueva fila a la tabla
+                        temp.addRow(obj);
+                        systemview.tablePurchase.setModel(temp);
+
+                        // Limpiar campos y configurar la interfaz para la siguiente entrada
+                        cleanFieldsPurchases();
+                        systemview.cmbSupplier.setEditable(false);
+                        systemview.txt_code_product_purchase.requestFocus();
+                        calculatePurchase();
+                        systemview.btnaddBuy.setEnabled(false);
+                    }
+
                 }
             }
         } else if (e.getSource() == systemview.btnBuyProduct) {
-            purchase_id_aux = 0;
             insertPurchase();
+            systemview.txt_id_purchase.setText("");
+            purchase_id = purchaseDao.PurchaseId() + 1;
+            systemview.txt_id_purchase.setText(String.valueOf(purchase_id));
         }
-
     }
-    private void insertPurchase(){
+    
+    private void insertPurchase() {
         double total = Double.parseDouble(systemview.txtTotal.getText());
         int employee_id = id_user;
-        purchase_id = purchaseDao.PurchaseId()+1;
-        if (purchaseDao.registerPurchase(getIdSupplier, employee_id, total)) {
-            for (int i = 0; i < systemview.tablePurchase.getRowCount(); i++) {
-                int product_code = purchaseDao.productPurchaseId(systemview.tablePurchase.getValueAt(i, 1).toString());
-                int purchase_quantity = Integer.parseInt(systemview.tablePurchase.getValueAt(i, 2).toString());
-                double purchase_price = Double.parseDouble(systemview.tablePurchase.getValueAt(i, 3).toString());
-                double purchase_subtotal = Double.parseDouble(systemview.tablePurchase.getValueAt(i, 4).toString());
-                
-                //Registrar detalles de la compra
-                purchaseDao.registerPurchaseDetails(purchase_id, purchase_price, purchase_quantity, purchase_subtotal, product_code);
+
+        // Verificar la id del proveedor
+        int supplierId = -1;
+        for (int i = 0; i < systemview.tablePurchase.getRowCount(); i++) {
+            String nameSupplier = systemview.tablePurchase.getValueAt(i, 5).toString();
+            supplierId = purchaseDao.purchaseSupplierId(nameSupplier);
+            // Puedes interrumpir el bucle si el supplierId es válido
+            if (supplierId != -1) {
+                break;
             }
-            cleanTableTemp();
-            JOptionPane.showMessageDialog(null, "Compra generada con exito");
-            cleanFieldsPurchases();
+        }
+        
+        if (supplierId != -1) {
+            // Registrar la compra utilizando el mismo id_compra para todos los detalles
+            if (purchaseDao.registerPurchase(supplierId, employee_id, total)) {
+                for (int i = 0; i < systemview.tablePurchase.getRowCount(); i++) {
+                    int purchase_id = Integer.parseInt(systemview.tablePurchase.getValueAt(i, 0).toString());
+                    int product_code = purchaseDao.productPurchaseId(systemview.tablePurchase.getValueAt(i, 1).toString());
+                    int purchase_quantity = Integer.parseInt(systemview.tablePurchase.getValueAt(i, 2).toString());
+                    double purchase_price = Double.parseDouble(systemview.tablePurchase.getValueAt(i, 3).toString());
+                    double purchase_subtotal = Double.parseDouble(systemview.tablePurchase.getValueAt(i, 4).toString());
+                    String fechaCaducidadStr = systemview.tablePurchase.getValueAt(i, 6).toString();
+                    
+                    if (purchaseDao.registerPurchaseDetails(purchase_id, purchase_price, purchase_quantity, purchase_subtotal, product_code, fechaCaducidadStr)) {
+                        System.out.println(purchase_id);
+                    } else {
+                        // Manejar errores si falla el registro del detalle
+                        JOptionPane.showMessageDialog(null, "Error al registrar los detalles de la compra");
+                        return;
+                    }
+                }
+                cleanTableTemp();
+                JOptionPane.showMessageDialog(null, "Compra generada con éxito");
+                systemview.txt_code_product_purchase.requestFocus();
+                cleanFieldsPurchases();
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al registrar la compra");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Proveedor inválido");
         }
     }
+
     //Metodo para limpiar los campos de texto
     public void cleanFields() {
         systemview.txtCodProd.setText("");
@@ -153,6 +188,21 @@ public class PurchaseController implements ActionListener, MouseListener, KeyLis
             model.removeRow(i);
             i = i - 1;
         }
+    }
+
+    // Método para verificar si el producto ya está en la lista temporal
+    private boolean isProductInTemp(String productName, String supplierName) {
+        if (temp != null) {
+            for (int i = 0; i < temp.getRowCount(); i++) {
+                String existingProductName = temp.getValueAt(i, 1).toString();
+                String existingSupplierName = temp.getValueAt(i, 5).toString(); // Modifiqué el índice
+
+                if (existingProductName.equals(productName) && existingSupplierName.equals(supplierName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -200,7 +250,7 @@ public class PurchaseController implements ActionListener, MouseListener, KeyLis
                 systemview.txtSubtotal.setText(String.valueOf(subtotal));
 
                 // Actualizar el campo de la ID de compra automáticamente
-                systemview.txt_id_purchase.setText(String.valueOf(purchase_id_aux + 1));
+                systemview.txt_id_purchase.setText(String.valueOf(purchase_id + 1));
 
                 // Verificar si todos los campos necesarios están completos
                 if (isFieldsComplete()) {
@@ -252,9 +302,9 @@ public class PurchaseController implements ActionListener, MouseListener, KeyLis
                 && !systemview.txtSubtotal.getText().isEmpty()
                 && !systemview.txt_id_purchase.getText().isEmpty();
     }
-    
+
     //Limpiar tabla temporal
-    public void cleanTableTemp(){
+    public void cleanTableTemp() {
         for (int i = 0; i < temp.getRowCount(); i++) {
             temp.removeRow(i);
             i = i - 1;

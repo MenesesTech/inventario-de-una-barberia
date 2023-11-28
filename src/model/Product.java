@@ -11,11 +11,12 @@ public class Product {
     private String updated;
     private int category_id;
     private String category_name;
-
+    private String fecha_caducidad;
+    
     public Product() {
     }
 
-    public Product(int id, String code, String name, String description, int quantity, String created, String updated, int category_id, String category_name) {
+    public Product(int id, String code, String name, String description, int quantity, String created, String updated, int category_id, String category_name, String fecha_caducidad) {
         this.id = id;
         this.code = code;
         this.name = name;
@@ -25,6 +26,15 @@ public class Product {
         this.updated = updated;
         this.category_id = category_id;
         this.category_name = category_name;
+        this.fecha_caducidad = fecha_caducidad;
+    }
+
+    public String getFecha_caducidad() {
+        return fecha_caducidad;
+    }
+
+    public void setFecha_caducidad(String fecha_caducidad) {
+        this.fecha_caducidad = fecha_caducidad;
     }
 
     public int getId() {

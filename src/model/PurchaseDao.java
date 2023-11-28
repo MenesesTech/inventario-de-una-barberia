@@ -51,23 +51,36 @@ public class PurchaseDao {
      * @param purchaseQuantity Cantidad de la compra
      * @param purchaseSubtotal Subtotal de la compra
      * @param productCode Código del producto comprado
+     * @param fechaCaducidad Fecha de caducidad del producto
      * @return True si los detalles se registran con éxito, false en caso
      * contrario
      */
-    public boolean registerPurchaseDetails(int purchaseId, double purchasePrice, int purchaseQuantity, double purchaseSubtotal, int productCode) {
-        String query = "INSERT INTO compra_detalle (precio_compra, cantidad, subtotal, id_compra, id_producto) VALUES (?,?,?,?,?)";
+    public boolean registerPurchaseDetails(int purchaseId, double purchasePrice, int purchaseQuantity, double purchaseSubtotal, int productCode, String fechaCaducidad) {
+        String insertQuery = "INSERT INTO compra_detalle (precio_compra, cantidad, subtotal, id_compra, id_producto) VALUES (?,?,?,?,?)";
+        String updateQuery = "UPDATE producto SET caducidad = ?, cantidad = IFNULL(cantidad, 0) + ? WHERE id_producto = ?";
+
         try {
             conn = cn.getConnection();
-            pst = conn.prepareStatement(query);
+            // Insertar los detalles de la compra
+            pst = conn.prepareStatement(insertQuery);
             pst.setDouble(1, purchasePrice);
             pst.setInt(2, purchaseQuantity);
             pst.setDouble(3, purchaseSubtotal);
             pst.setInt(4, purchaseId);
             pst.setInt(5, productCode);
             pst.execute();
+
+            // Actualizar la cantidad del producto y la fecha de caducidad
+            pst = conn.prepareStatement(updateQuery);
+            pst.setString(1, fechaCaducidad); // Establecer la fecha de caducidad como una cadena directamente
+            pst.setInt(2, purchaseQuantity);
+            pst.setInt(3, productCode);
+            pst.executeUpdate();
+
             return true;
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al registrar los detalles de la compra " + e);
+            System.out.println(e);
             return false;
         }
     }

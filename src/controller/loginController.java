@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import model.Employee;
 import model.EmployeeDao;
+import model.ProductDao;
 import view.LoginView;
 import view.systemView;
 
@@ -43,6 +44,8 @@ public class LoginController implements ActionListener {
                         admin.setVisible(true);
                         admin.jLabel23.setVisible(true);
                         admin.opcUsers.setVisible(true);
+                        ProductDao productDao = new ProductDao();
+                        productDao.stockControl();
                     } else {
                         systemView aux = new systemView();
                         aux.setVisible(true);
@@ -50,6 +53,8 @@ public class LoginController implements ActionListener {
                         aux.opcUsers.setEnabled(false);
                         aux.opcUsers.setVisible(false);
                         aux.opcUsers.setOpaque(false);
+                        ProductDao productDao = new ProductDao();
+                        productDao.stockControl();
                     }
 
                     // Cierra la interfaz de inicio de sesión
