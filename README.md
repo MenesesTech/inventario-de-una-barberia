@@ -13,4 +13,4 @@ Diseñado para gestionar eficientemente el inventario de la barbería.
 ** NetBeans IDE
 
 # ScreenShots
-![Results](https://github.com/obheda12/GitDorker/blob/master/GitDorker%20Usage%20Example%20-%20Tesla.png)
+![Results](https://github.com/MenesesTech/inventario-de-una-barberia/blob/main/login.png)
